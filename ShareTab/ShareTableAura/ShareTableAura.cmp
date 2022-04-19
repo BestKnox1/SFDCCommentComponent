@@ -1,0 +1,60 @@
+<aura:component implements='flexipage:availableForRecordHome,flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId' controller="ShareTableAuraController" access="global">
+	<aura:attribute name="obj" type="Class__c"/>
+	<aura:attribute name="objList" type="List"/>
+	<aura:attribute name="columns" type="list"/>
+	<aura:attribute name="sortedBy" type="String"/>
+	<aura:attribute name="sortedDirection" type="String"/>
+    <aura:attribute name="defaultSortDirection" type="String"/>
+
+
+	<aura:attribute name="objApiName" type="String" description="应用到对象的名称 access"/>
+	<aura:attribute name="objFieldApiName" type="String"  description="分类字段一"/>
+	<aura:attribute name="objFieldSet" type="String" />
+	<aura:attribute name="searchFields" type="List"/>
+	<aura:attribute name="limitPer" type="List" default="[10, 20, 50, 100, 150]"/>
+	<aura:attribute name="isSearch" type="Boolean" default="false"/>
+	<aura:attribute name="isRelationShip" type="Boolean" default="false"/>
+	<aura:attribute name="relatedFieldApiName" type="String"/>
+	<aura:attribute name="searchApiMap" type="String" />
+	<aura:attribute name="searchApiMapAndVar" type="String" />
+	<aura:attribute name="title" type="String" />
+	<aura:attribute name="page" type="Integer" default="1"/>
+	<aura:attribute name="pages" type="Integer" default="1"/>
+	<aura:attribute name="total" type="Integer" />
+	<aura:attribute name="orderByField" type="String" />
+	<aura:attribute name="options" type="List" />
+	<aura:handler name="init" value="this" action="{! c.doInit}"/>
+	<lightning:card title="{! v.title}">
+		<aura:if isTrue="{! v.isSearch}">
+				<lightning:recordEditForm objectApiName="{! v.objApiName}" class="slds-card__body searchTable" onsubmit="{! c.testSubmit}">	
+					<aura:iteration items="{! v.searchFields}" var="item" indexVar="index">
+			            <div class="slds-col slds-size_1-of-2">
+			                <lightning:inputField fieldName="{! item}" required="false"/><!-- Your lightning:inputField components here -->
+			            </div>
+			        </aura:iteration>
+			        <lightning:button class="slds-m-top_small" type="submit" label="搜索" />
+				</lightning:recordEditForm>
+		</aura:if>
+
+		<aura:if isTrue="{! v.options!=null}">
+			<lightning:combobox name="progress" label="分类"  value="ALL" options="{! v.options }" style="width: 35%; margin-left: 20px;" onchange="{! c.doTableChange}"/>
+		</aura:if>
+
+		<div style="margin-left: 10px;margin-right: 10px;" class="slds-card__body">
+        <lightning:datatable data="{! v.objList}" 
+                             	columns="{! v.columns}" 
+                                keyField="id" 
+                                hideCheckboxColumn="true"
+                                sortedBy="{! v.sortedBy }"
+                                sortedDirection="{! v.sortedDirection }"
+                                defaultSortDirection="{! v.defaultSortDirection }"
+                                onsort=""/>
+          	    <div class="slds-card slds-card__footer slds-align_absolute-center">              
+                    <lightning:button disabled="{!v.page == 1}" variant="brand" label="上一页" onclick="{! c.preview }" />  
+                    <p class="slds-page-header__title slds-truncate">{!v.total}  •  {!v.page} / {!v.pages}</p>                     
+                    <lightning:button disabled="{!v.page == v.pages}" aura:id="previousPage" variant="brand" label="下一页" onclick="{! c.next }" />
+                </div>
+        </div>
+
+	</lightning:card>	
+</aura:component>

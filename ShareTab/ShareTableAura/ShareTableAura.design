@@ -1,0 +1,11 @@
+<design:component>
+    <design:attribute name="objApiName" label="对象名"/>
+    <design:attribute name="objFieldApiName" label="分类对象名" description="暂时只支持picklisk字段"/>
+    <design:attribute name="objFieldSet"  label="显示字段集" description="(注： 请参照格式fieldApiName,fieldApiName2 填写)"/>
+    <design:attribute name="isSearch"  label="是否支持搜索"/>
+    <design:attribute name="isRelationShip"  label="是否关联当前记录"/>
+    <design:attribute name="relatedFieldApiName"  label="关联当前记录对应字段"/>
+    <design:attribute name="title"  label="组件名称"/>
+    <design:attribute name="searchApiMap" label="搜索字段集" description="(注： 请参照格式fieldApiName,fieldApiName2 填写)"/>
+
+</design:component>
