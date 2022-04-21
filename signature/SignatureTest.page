@@ -1,0 +1,124 @@
+<apex:page extensions="AnyObjectSignatureController" standardController="Class__c" showheader="false" sidebar="false" standardStylesheets="false">
+        <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+        <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="https://cdn.bootcss.com/html2canvas/0.5.0-beta4/html2canvas.js"></script>
+        <script src="https://cdn.bootcss.com/jspdf/1.3.4/jspdf.debug.js"></script>
+    <apex:form >
+        <div id="container" style="width:595.28px;height: 841.89px;border: 1px solid;">
+<div class="container">
+  
+   <canvas id="signatureCanvas" height="100px" width="350px" style="border: 3px solid antiquewhite; border-radius: 8px;" ></canvas>
+<br/>
+<br/>
+<input id="saveSigButton" style="text-align: center;" type="button" name="SigCap" onclick="saveSignature();" value="Signature"></input>
+{!signatureImgUrl}
+<apex:image value=""/>
+<input id="clearSign" style="text-align: center;" type="button" name="SigCap" onclick="clearSign();" value="ClearSignature"></input>
+ <apex:actionFunction action="{!saveSignature}" name="methodOneInJavascript"  reRender="img-signature">
+                                <apex:param name="imgUrl" assignTo="{!signatureImgUrl}" value="" />
+                             </apex:actionFunction>
+<div id="imageBox">
+    <apex:image value="https://shuaiwang-dev-ed--c.documentforce.com/servlet/servlet.FileDownload?file=00P2w000007Xy0CEAS"/>
+</div>
+    <apex:commandButton action="{! testSavePDF}"> 保存</apex:commandButton>
+  </div><br/></div></apex:form>
+<script>
+    var canvas;   
+    var context;   
+    var drawingUtil;   
+    var isDrawing = false;
+    var accountId = '';   
+    var prevX, prevY, currX, currY = 0;   
+    var accountId;
+
+    function DrawingUtil() {    
+        isDrawing = false;   
+        canvas.addEventListener("mousedown", start, false);   
+        canvas.addEventListener("mousemove", draw, false);   
+        canvas.addEventListener("mouseup", stop, false);   
+        canvas.addEventListener("mouseout", stop, false);   
+        canvas.addEventListener("touchstart", start, false);   
+        canvas.addEventListener("touchmove", draw, false);   
+        canvas.addEventListener("touchend", stop, false);    
+        w = canvas.width;
+        h = canvas.height;   
+    }
+
+    function start(event) {  
+       
+        event.preventDefault();
+        isDrawing = true;    
+        prevX = currX;    
+        prevX = currY;    
+        console.log(event.changedTouches);
+        var isTouch = ((typeof(event.changedTouches)== "undefined")|| (event.changedTouches===null));
+        currX =  isTouch ?(event.clientX - canvas.offsetLeft) : (event.changedTouches[0].clientX - canvas.offsetLeft); 
+        
+        currY = isTouch ?(event.clientY - canvas.offsetTop) : (event.changedTouches[0].clientY - canvas.offsetTop); 
+        context.beginPath();    
+        context.fillStyle = "cadetblue";    
+        context.fillRect(currX, currY, 2, 2);
+        context.closePath();
+    }
+
+    function draw(event) {    
+        event.preventDefault();    
+        if (isDrawing) {
+            prevX = currX;
+            prevY = currY;
+            var isTouch = ((typeof(event.changedTouches)== "undefined")|| (event.changedTouches===null));
+            currX = isTouch ?(event.clientX - canvas.offsetLeft) : (event.changedTouches[0].clientX - canvas.offsetLeft); 
+            
+            currY = isTouch ?(event.clientY - canvas.offsetTop) : (event.changedTouches[0].clientY - canvas.offsetTop); 
+
+            context.beginPath();
+            context.moveTo(prevX, prevY);
+            context.lineTo(currX, currY);
+            context.strokeStyle = "cadetblue";
+            context.lineWidth = "2";
+            context.stroke();
+            context.closePath();    
+        }   
+    }
+
+
+    function stop(event) {    
+        if (isDrawing) {
+            context.stroke();
+            context.closePath();
+            isDrawing = false;    
+        }   
+    }
+
+    function clearSign() {    
+        context.clearRect(0,0,w,h);   
+    }
+
+    canvas = document.getElementById("signatureCanvas");
+    context = canvas.getContext("2d");
+    context.strokeStyle = "black";   context.lineWidth = "2";
+    drawingUtil = new DrawingUtil(canvas);
+
+    function saveSignature() {
+    if (confirm('please check your signature info, if ok please onclick save')) {
+
+        var strDataURI = canvas.toDataURL(); 
+        strDataURI = strDataURI.replace(/^data:image\/(png|jpg);base64,/, "");
+        var imgBox = document.getElementById("imageBox");
+        var img = document.createElement("img");
+        img.src = strDataURI;
+        imgBox.appendChild(img);
+
+     methodOneInJavascript(strDataURI);
+    }         
+        
+	   // alert(result);
+    }
+
+
+    
+    
+    
+</script>
+
+</apex:page>
