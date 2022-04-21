@@ -1,3 +1,10 @@
+<!--
+  @description       : 
+  @author            : Knox.wang
+  @group             : 
+  @last modified on  : 04-21-2022
+  @last modified by  : Knox.wang
+-->
 <apex:page extensions="AnyObjectSignatureController" standardController="Class__c" showheader="false" sidebar="false" standardStylesheets="false">
         <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
         <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -24,7 +31,8 @@
   </div><br/></div></apex:form>
 <script>
     var canvas;   
-    var context;   
+    var context;
+       
     var drawingUtil;   
     var isDrawing = false;
     var accountId = '';   
